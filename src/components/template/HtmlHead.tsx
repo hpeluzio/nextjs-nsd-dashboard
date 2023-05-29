@@ -5,6 +5,8 @@ interface Props {
 }
 
 const HtmlHead = ({ title = "", description = "", children = null }: Props) => {
+  console.log("title->", title);
+  console.log("description->", description);
   return (
     <div>
       {title && <title>{title}</title>}

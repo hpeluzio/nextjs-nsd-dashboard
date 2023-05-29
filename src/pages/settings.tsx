@@ -2,8 +2,8 @@
 import Layout from "../components/template/Layout";
 export default function Settings() {
   return (
-    <Layout title="Initial Page" description="description">
-      settings
+    <Layout title="Settings" description="Settings">
+      Settings
     </Layout>
   );
 }
