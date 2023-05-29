@@ -1,4 +1,5 @@
-import { HomeIcon, LogoutIcon, Notifications, SettingsIcon } from "../icons";
+import { HomeIcon, Notifications, SettingsIcon } from "../icons";
+import LogoutNavItem from "./LogoutNavItem";
 import NavItem from "./NavItem";
 
 export default function SideNav() {
@@ -20,17 +21,7 @@ export default function SideNav() {
         />
       </ul>
       <ul>
-        <NavItem
-          url="http://localhost:3000/logout"
-          text="Logout"
-          icon={LogoutIcon}
-          // onClick={logout}
-          // className={`
-          //     text-red-600 dark:text-red-400
-          //     hover:bg-red-400 hover:text-white
-          //     dark:hover:text-white
-          // `}
-        />
+        <LogoutNavItem />
       </ul>
     </aside>
   );
