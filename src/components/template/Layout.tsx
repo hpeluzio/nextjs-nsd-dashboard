@@ -12,15 +12,17 @@ interface Props {
 
 export default function Layout({ title, description, children }: Props) {
   return (
-    <>
+    <div className="flex flex-col h-screen w-screen bg-green-200">
       <HtmlHead title={title} description={description} />
-      <div className="h-screen w-screen">
+      <TopBar />
+      <div className="flex flex-grow bg-blue-200">
         <SideNav />
-        <div className="flex flex-col bg-gray-300">
-          <TopBar />
-          <Content> {children}</Content>
-        </div>
+        <Content> {children}</Content>
       </div>
-    </>
+
+      {/* <div className="flex flex-col bg-gray-300">
+       
+      </div> */}
+    </div>
   );
 }
