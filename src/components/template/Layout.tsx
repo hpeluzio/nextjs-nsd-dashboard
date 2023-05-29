@@ -1,19 +1,26 @@
 import Content from "./Content";
+import HtmlHead from "./HtmlHead";
 import SideNav from "./SideNav";
 import TopBar from "./TopBar";
+import "../../styles/globals.css";
 
-interface LayoutProps {
+interface Props {
   title: string;
-  subtitle: string;
+  description: string;
   children?: any;
 }
 
-export default function Layout(props) {
+export default function Layout({ title, description, children }: Props) {
   return (
-    <div>
-      <TopBar />
-      <SideNav />
-      <Content />
-    </div>
+    <>
+      <HtmlHead title={title} description={description} />
+      <div className="h-screen w-screen">
+        <SideNav />
+        <div className="flex flex-col bg-gray-300">
+          <TopBar />
+          <Content> {children}</Content>
+        </div>
+      </div>
+    </>
   );
 }
