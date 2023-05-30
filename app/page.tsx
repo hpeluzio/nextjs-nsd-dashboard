@@ -8,11 +8,16 @@ import { increment, decrement, incrementByAmount } from './redux/counterSlice';
 
 export default function Page() {
   const { value } = useSelector((state: RootState) => state.counter);
+  const { theme, navbar } = useSelector((state: RootState) => state.layout);
+  console.log('navbar', navbar);
   const dispatch = useDispatch();
 
   return (
-    <main className="h-screen">
-      <div className="h-screen flex flex-col items-center">
+    <main>
+      <div>
+        {theme} - {navbar ? 'True' : 'False'}
+      </div>
+      <div className="flex flex-col items-center">
         <button className="border-2 border-x-cyan-950 p-2 bg-zinc-700" onClick={() => dispatch(increment())}>
           Increment
         </button>
