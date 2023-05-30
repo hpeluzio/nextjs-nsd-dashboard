@@ -13,7 +13,7 @@ export default function Content({ children }: Props) {
 
   const css = useMemo(() => {
     if (theme === 'LIGHT') return 'bg-white';
-    if (theme === 'DARK') return 'bg-sky-950';
+    if (theme === 'DARK') return 'bg-sky-800';
     return 'bg-white';
   }, [theme]);
 

@@ -29,10 +29,12 @@ export default function SideNav() {
     >
       <ul className="flex-grow">
         <NavItem url="http://localhost:3000/" text="Home" icon={HomeIcon} />
-
-        <NavItem url="http://localhost:3000/pages/settings" text="Settings" icon={SettingsIcon} />
-
-        <NavItem url="http://localhost:3000/pages/notifications" text="Notifications" icon={Notifications} />
+        <NavItem url="http://localhost:3000/settings" text="Settings" icon={SettingsIcon} />
+        <NavItem url="http://localhost:3000/notifications" text="Notifications" icon={Notifications} />
+        <NavItem url="http://localhost:3000/contact" text="Contact" icon={Notifications} />
+        <NavItem url="http://localhost:3000/about" text="About" icon={Notifications} />
+        <NavItem url="http://localhost:3000/login" text="Login" icon={Notifications} />
+        <NavItem url="http://localhost:3000/register" text="Register" icon={Notifications} />
       </ul>
       <ul>
         <LogoutNavItem />

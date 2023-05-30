@@ -8,10 +8,13 @@ const poppins = Poppins({
   subsets: ['latin'],
 });
 
-// export const metadata = {
-//   title: 'SND Admin dashboard',
-//   description: 'SND Admin dashboard',
-// };
+export const metadata = {
+  title: {
+    default: 'SND Admin dashboard',
+    template: '%s | SND Admin dashboard',
+  },
+  description: 'SND Admin dashboard',
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
