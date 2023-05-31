@@ -3,7 +3,6 @@ import { RootState } from '@/app/redux/store';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import '../../styles/globals.css';
 
 interface Props {
   url: string;
@@ -17,12 +16,13 @@ export default function NavItem({ url, text, icon }: Props) {
   return (
     <Link href={url} className="w-full">
       <li className={`flex h-12 p-5`}>
-        {navbar && (
-          <div className="flex items-center w-full">
-            {icon} <span className="ml-2 text-lg">{text}</span>
-          </div>
-        )}
-        {!navbar && <div className="flex items-center">{icon}</div>}
+        <div
+          className={`flex items-center ${!navbar ? 'justify-center' : 'justify-start'} 
+          w-full text-neutral-50
+          dark:text-neutral-300`}
+        >
+          {icon} {navbar && <span className="ml-2">{text}</span>}
+        </div>
       </li>
     </Link>
   );

@@ -1,14 +1,8 @@
 'use client';
 
-// export const metadata = {
-//   title: 'Home',
-// };
-
 import type { RootState } from './redux/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { increment, decrement, incrementByAmount } from './redux/counterSlice';
-
-// import './globals.css';
 
 export default function Page() {
   const { value } = useSelector((state: RootState) => state.counter);

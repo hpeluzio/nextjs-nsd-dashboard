@@ -4,7 +4,6 @@ import Content from './Content';
 import HtmlHead from './HtmlHead';
 import SideNav from './SideNav';
 import TopBar from './TopBar';
-import '@/app/styles/globals.css';
 
 interface Props {
   title: string;

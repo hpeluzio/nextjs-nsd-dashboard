@@ -1,6 +1,7 @@
 'use client';
 
 import { toggleNavbar } from '@/app/redux/layoutSlice';
+import { RootState } from '@/app/redux/store';
 import { useTheme } from 'next-themes';
 import { useDispatch, useSelector } from 'react-redux';
 import { HamburguerIcon, MoonIcon, SunIcon } from '../icons';
@@ -9,19 +10,26 @@ import Logo from './Logo';
 export default function TopBar() {
   const dispatch = useDispatch();
   const { theme, setTheme } = useTheme();
+  const { navbar } = useSelector((state: RootState) => state.layout);
 
   return (
     <div
       className={`
-        flex items-center h-16 dark
+        flex items-center h-16 bg-neutral-600 dark:bg-neutral-900
       `}
     >
-      <div className="w-80">
+      <div
+        className={`
+        h-full flex items-center justify-center
+        bg-neutral-500 dark:bg-neutral-800
+        ${navbar ? 'w-80' : 'w-20'}
+      `}
+      >
         <Logo />
       </div>
       <div className="flex w-full items-center">
         <div
-          className="p-3"
+          className="p-3 text-neutral-50 dark:text-neutral-300"
           onClick={() => {
             dispatch(toggleNavbar());
           }}
@@ -29,19 +37,9 @@ export default function TopBar() {
           {HamburguerIcon}
         </div>
         <div className="flex-grow" />
-        {/* <select
-          value={theme}
-          onChange={(e) => {
-            console.log('theme', theme);
-            setTheme(e.target.value);
-          }}
-        >
-          <option value="system">System</option>
-          <option value="dark">Dark</option>
-          <option value="light">Light</option>
-        </select> */}
+
         <div
-          className="mr-10 p-3 "
+          className="mr-10 p-3 text-neutral-50 dark:text-neutral-300"
           onClick={() => {
             if (theme === 'light') setTheme('dark');
             if (theme === 'dark') setTheme('light');

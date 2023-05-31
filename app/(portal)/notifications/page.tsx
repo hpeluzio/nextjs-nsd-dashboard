@@ -1,14 +1,8 @@
 'use client';
 
-// export const metadata = {
-//   title: 'Notifications',
-// };
-
 import type { RootState } from '@/app/redux/store';
 import { useSelector, useDispatch } from 'react-redux';
 import { increment, decrement, incrementByAmount } from '@/app/redux/counterSlice';
-
-// import './globals.css';
 
 export default function Notifications() {
   const { value } = useSelector((state: RootState) => state.counter);
