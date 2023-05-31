@@ -35,6 +35,7 @@ export default function SideNav() {
         <NavItem url="http://localhost:3000/about" text="About" icon={Notifications} />
         <NavItem url="http://localhost:3000/login" text="Login" icon={Notifications} />
         <NavItem url="http://localhost:3000/register" text="Register" icon={Notifications} />
+        <NavItem url="http://localhost:3000/fetching" text="Fetching" icon={SettingsIcon} />
       </ul>
       <ul>
         <LogoutNavItem />
