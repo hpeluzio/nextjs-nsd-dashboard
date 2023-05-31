@@ -1,4 +1,5 @@
 'use client';
+
 import Content from './Content';
 import HtmlHead from './HtmlHead';
 import SideNav from './SideNav';

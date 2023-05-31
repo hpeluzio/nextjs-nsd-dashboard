@@ -14,3 +14,8 @@ body {
   background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
   font-family: 'Poppins', sans-serif;
 }
+
+[data-theme='dark'] [data-hide-on-theme='dark'],
+[data-theme='light'] [data-hide-on-theme='light'] {
+  display: none;
+}

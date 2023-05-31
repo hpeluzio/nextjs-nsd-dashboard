@@ -11,16 +11,10 @@ interface Props {
 export default function Content({ children }: Props) {
   const { theme } = useSelector((state: RootState) => state.layout);
 
-  const css = useMemo(() => {
-    if (theme === 'LIGHT') return 'bg-white';
-    if (theme === 'DARK') return 'bg-sky-800';
-    return 'bg-white';
-  }, [theme]);
-
   return (
     <div
       className={`
-      flex flex-col w-full p-5 ${css}
+      flex flex-col w-full p-5
     `}
     >
       <div>{children}</div>

@@ -22,7 +22,7 @@ export default function Page() {
         {theme} - {navbar ? 'True' : 'False'}
       </div>
       <div className="flex flex-col items-center">
-        <button className="border-2 border-x-cyan-950 p-2 bg-zinc-700" onClick={() => dispatch(increment())}>
+        <button className="border-2 border-x-cyan-950 p-2" onClick={() => dispatch(increment())}>
           Increment
         </button>
         <span>{value}</span>
