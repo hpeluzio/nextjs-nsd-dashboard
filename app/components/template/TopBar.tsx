@@ -15,14 +15,15 @@ export default function TopBar() {
   return (
     <div
       className={`
-        flex items-center h-16 bg-neutral-600 dark:bg-neutral-900
+        flex items-center h-16 bg-neutral-700 dark:bg-neutral-900
       `}
     >
       <div
         className={`
         h-full flex items-center justify-center
-        bg-neutral-500 dark:bg-neutral-800
+        bg-neutral-600 dark:bg-neutral-800
         ${navbar ? 'w-80' : 'w-20'}
+        transition-all
       `}
       >
         <Logo />

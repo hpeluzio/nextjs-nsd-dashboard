@@ -11,7 +11,9 @@ export default function SideNav() {
   return (
     <aside
       className={`
-        flex flex-col bg-neutral-400 dark:bg-neutral-700 ${navbar ? 'w-80' : 'w-20'}
+        flex flex-col bg-neutral-500 dark:bg-neutral-700 
+        ${navbar ? 'w-80' : 'w-20'}
+        transition-all
       `}
     >
       <ul className={`flex flex-col flex-grow`}>

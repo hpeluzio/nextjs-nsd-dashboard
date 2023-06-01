@@ -22,7 +22,14 @@ export default function Logo() {
         </div>
       </div>
 
-      {navbar && <div className="text-3xl text-neutral-50 dark:text-neutral-300 ml-3">SND</div>}
+      <div
+        className={`text-3xl text-neutral-50 dark:text-neutral-300 ml-3 
+        transition-all
+        ${!navbar ? 'hidden' : ''}
+      `}
+      >
+        SND
+      </div>
     </div>
   );
 }
