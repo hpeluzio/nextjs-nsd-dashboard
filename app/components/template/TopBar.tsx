@@ -15,22 +15,22 @@ export default function TopBar() {
   return (
     <div
       className={`
-        flex items-center h-16 bg-neutral-700 dark:bg-neutral-900
+        flex items-center h-16 bg-neutral-700 dark:bg-neutral-900 
       `}
     >
       <div
         className={`
         h-full flex items-center justify-center
         bg-neutral-600 dark:bg-neutral-800
-        ${navbar ? 'w-80' : 'w-20'}
+        ${navbar ? 'w-64' : 'w-20'}
         transition-all
       `}
       >
         <Logo />
       </div>
-      <div className="flex w-full items-center">
+      <div className="flex h-full w-full items-center ">
         <div
-          className="p-3 text-neutral-50 dark:text-neutral-300"
+          className="flex items-center cursor-pointer p-5 h-full text-neutral-50 dark:text-neutral-300 hover:bg-neutral-500 hover:dark:bg-neutral-700"
           onClick={() => {
             dispatch(toggleNavbar());
           }}
@@ -38,9 +38,8 @@ export default function TopBar() {
           {HamburguerIcon}
         </div>
         <div className="flex-grow" />
-
         <div
-          className="mr-10 p-3 text-neutral-50 dark:text-neutral-300"
+          className="h-full p-5 cursor-pointer text-neutral-50 dark:text-neutral-300 hover:bg-neutral-500 hover:dark:bg-neutral-700"
           onClick={() => {
             if (theme === 'light') setTheme('dark');
             if (theme === 'dark') setTheme('light');

@@ -12,7 +12,7 @@ export default function SideNav() {
     <aside
       className={`
         flex flex-col bg-neutral-500 dark:bg-neutral-700 
-        ${navbar ? 'w-80' : 'w-20'}
+        ${navbar ? 'w-64' : 'w-20'}
         transition-all
       `}
     >

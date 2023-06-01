@@ -6,15 +6,11 @@ import { increment, decrement, incrementByAmount } from '@/app/redux/counterSlic
 
 export default function Notifications() {
   const { value } = useSelector((state: RootState) => state.counter);
-  const { theme, navbar } = useSelector((state: RootState) => state.layout);
 
   const dispatch = useDispatch();
 
   return (
     <main>
-      <div>
-        {theme} - {navbar ? 'True' : 'False'}
-      </div>
       <div className="flex flex-col items-center">
         <button className="border-2 border-x-cyan-950 p-2" onClick={() => dispatch(increment())}>
           Increment
