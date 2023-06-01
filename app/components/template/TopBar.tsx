@@ -18,16 +18,7 @@ export default function TopBar() {
         flex items-center h-16 bg-neutral-700 dark:bg-neutral-900 
       `}
     >
-      <div
-        className={`
-        h-full flex items-center justify-center
-        bg-neutral-600 dark:bg-neutral-800
-        ${navbar ? 'w-64' : 'w-20'}
-        transition-all
-      `}
-      >
-        <Logo />
-      </div>
+      <Logo />
       <div className="flex h-full w-full items-center ">
         <div
           className="flex items-center cursor-pointer p-5 h-full text-neutral-50 dark:text-neutral-300 hover:bg-neutral-500 hover:dark:bg-neutral-700"
