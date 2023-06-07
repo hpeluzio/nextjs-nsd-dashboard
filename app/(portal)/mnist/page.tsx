@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import './mnist.css';
 // import './script.js';
+import * as ort from 'onnxruntime-web';
 
 export default function Mnist() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
