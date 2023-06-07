@@ -10,7 +10,6 @@ import Logo from './Logo';
 export default function TopBar() {
   const dispatch = useDispatch();
   const { theme, setTheme } = useTheme();
-  const { navbar } = useSelector((state: RootState) => state.layout);
 
   return (
     <div
@@ -32,8 +31,10 @@ export default function TopBar() {
         <div
           className="h-full p-5 cursor-pointer text-neutral-50 dark:text-neutral-300 hover:bg-neutral-500 hover:dark:bg-neutral-700"
           onClick={() => {
+            console.log('theme ->', theme);
             if (theme === 'light') setTheme('dark');
             if (theme === 'dark') setTheme('light');
+            if (!theme) setTheme('light');
           }}
         >
           {theme === 'dark' ? SunIcon : MoonIcon}
