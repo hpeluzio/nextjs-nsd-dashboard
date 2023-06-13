@@ -1,41 +1,88 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import './mnist.css';
-// import './script.js';
+import { useEffect, useRef, useState } from 'react';
 import * as ort from 'onnxruntime-web';
+import { Tensor } from 'onnxruntime-web';
+import Jimp from 'jimp';
+import './mnist.css';
 
 export default function Mnist() {
+  const CANVAS_SIZE = 280;
+  const CANVAS_SCALE = 0.5;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isDrawing = useRef(false);
+  const session = useRef<ort.InferenceSession>();
+  const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
+  const initSession = async () => {
+    setLoading(true);
+
+    const session = await ort.InferenceSession.create('./onnx_model.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
+
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
     if (!canvas || !context) return;
 
-    context.fillStyle = '#fff';
-    console.log('width, height->', context.canvas.width, 'x', context.canvas.height);
-    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    // context.lineWidth = 28;
+    // context.lineJoin = 'round';
+    // context.font = '28px sans-serif';
+    // context.textAlign = 'center';
+    // context.textBaseline = 'middle';
+    // context.fillStyle = '#fff';
+    // context.fillText('Draw a number here...', CANVAS_SIZE / 2, CANVAS_SIZE / 2);
+    // clearCanvas();
 
     // Set up event listeners
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
     canvas.addEventListener('mouseout', stopDrawing);
+  };
+
+  const endSession = async () => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext('2d');
+    if (!canvas || !context) return;
+
+    canvas.removeEventListener('mousedown', startDrawing);
+    canvas.removeEventListener('mousemove', draw);
+    canvas.removeEventListener('mouseup', stopDrawing);
+    canvas.removeEventListener('mouseout', stopDrawing);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    initSession();
+
+    setLoading(false);
 
     // Cleanup code
     return () => {
-      canvas.removeEventListener('mousedown', startDrawing);
-      canvas.removeEventListener('mousemove', draw);
-      canvas.removeEventListener('mouseup', stopDrawing);
-      canvas.removeEventListener('mouseout', stopDrawing);
+      endSession();
     };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const startDrawing = (event: MouseEvent) => {
     isDrawing.current = true;
     draw(event);
+  };
+
+  const updatePredictions = async () => {
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext('2d');
+    const imgData = context!.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+    const imgArray = new Float32Array(imgData.data);
+    console.log('imgArray', imgArray);
+
+    // const input = new Tensor(imgArray, 'float32');
+    // console.log('input ->', input);
+    // if (!session.current) return;
+    // const outputMap = await session.current.run([input]);
+    // console.log('outputMap', outputMap);
+    // console.log('input', input);
   };
 
   const draw = (event: MouseEvent) => {
@@ -57,17 +104,20 @@ export default function Mnist() {
     // context.lineWidth = 5;
     // context.lineCap = 'round';
     // context.fillRect(x, y, 20, 20);
-    context.lineWidth = 28;
+    // context.lineWidth = 28;
     context.lineJoin = 'round';
     context.font = '28px sans-serif';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillStyle = '#212121';
+
     const radius = 15;
     context.beginPath();
     context.arc(x, y, radius, 0, 2 * Math.PI);
     context.fill();
+    context.fillStyle = '#212121';
     context.fillRect(x - 10, y - 10, 15, 15);
+
+    updatePredictions();
   };
 
   const stopDrawing = () => {
@@ -84,6 +134,31 @@ export default function Mnist() {
     context.clearRect(0, 0, canvas.width, canvas.height);
   };
 
+  const handleDownload = () => {
+    const canvas = canvasRef.current;
+    const link = document.createElement('a');
+    link.href = canvas!.toDataURL('image/png');
+    link.download = 'canvas.png';
+    link.click();
+  };
+
+  const onnxruntime = async () => {
+    // var [inferenceResult, inferenceTime] = await inferenceSqueezenet();
+    console.log('onnxruntime');
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext('2d');
+    const imgData = context!.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    console.log('imgData', imgData);
+    const imgArray = new Float32Array(imgData.data);
+    console.log('Float32Array imgArray', imgArray);
+    const imageData = await Jimp.read('1.png').then((imageBuffer: Jimp) => {
+      return imageBuffer.resize(280, 280);
+    });
+    console.log('Jimp imageData', imageData);
+  };
+
+  if (loading) return <div>Loading...</div>;
+
   return (
     <main>
       <div className="flex flex-col items-center">Mnist</div>
@@ -92,6 +167,14 @@ export default function Mnist() {
 
         <div className="button" id="clear-button" onClick={clearCanvas}>
           CLEAR
+        </div>
+
+        <div className="button" id="download-button">
+          <button onClick={handleDownload}>Download as PNG</button>
+        </div>
+
+        <div className="button" id="onnxruntime-button">
+          <button onClick={onnxruntime}>onnxruntime</button>
         </div>
 
         <div className="predictions">
