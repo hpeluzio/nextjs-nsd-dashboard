@@ -75,7 +75,6 @@ export default function Mnist() {
     const imgData = context!.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
     const imgArray = new Float32Array(imgData.data);
-    console.log('imgArray', imgArray);
 
     // const input = new Tensor(imgArray, 'float32');
     // console.log('input ->', input);
@@ -143,18 +142,24 @@ export default function Mnist() {
   };
 
   const onnxruntime = async () => {
-    // var [inferenceResult, inferenceTime] = await inferenceSqueezenet();
-    console.log('onnxruntime');
     const canvas = canvasRef.current;
-    const context = canvas?.getContext('2d');
-    const imgData = context!.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    console.log('imgData', imgData);
-    const imgArray = new Float32Array(imgData.data);
-    console.log('Float32Array imgArray', imgArray);
-    const imageData = await Jimp.read('1.png').then((imageBuffer: Jimp) => {
+
+    const imageData = await Jimp.read(canvas!.toDataURL('image/png')).then((imageBuffer: Jimp) => {
       return imageBuffer.resize(280, 280);
     });
+
     console.log('Jimp imageData', imageData);
+
+    const dataUrl = await imageData.getBase64Async(Jimp.MIME_PNG);
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = 'image.png'; // Set the desired file name and extension
+
+    // Simulate a click to trigger the download
+    link.click();
+
+    // Clean up by removing the temporary anchor element
+    link.remove();
   };
 
   if (loading) return <div>Loading...</div>;

@@ -21,6 +21,7 @@ export default function SideNav() {
         <NavItem url="http://localhost:3000/settings" text="Settings" icon={SettingsIcon} />
         <NavItem url="http://localhost:3000/notifications" text="Notifications" icon={Notifications} />
         <NavItem url="http://localhost:3000/mnist" text="Mnist" icon={CalculatorIcon} />
+        <NavItem url="http://localhost:3000/onnxruntime" text="Onnxruntime Web" icon={CalculatorIcon} />
         <NavItem url="http://localhost:3000/contact" text="Contact" icon={EnvelopeIcon} />
         <NavItem url="http://localhost:3000/about" text="About" icon={InfoIcon} />
         <NavItem url="http://localhost:3000/login" text="Login" icon={LoginIcon} />
