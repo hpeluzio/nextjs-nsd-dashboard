@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { IMAGE_URLS } from '@/app/utils/data/sample-image-urls';
 import { inferenceSqueezenet } from '@/app/utils/predict';
-import './onnxruntime.css';
+// import './onnxruntime.css';
 
 interface Props {
   height: number;
