@@ -22,13 +22,13 @@ export default async function Fetching() {
   console.log('data', dataGet);
   useEffect(() => {
     const fetchDataGet = async () => {
-      const response = await fetch('http://localhost:3000/api/hello');
+      const response = await fetch('/api/hello');
       const val = await response.json();
       setDataGet(val);
     };
 
     const fetchDataPost = async () => {
-      const response = await fetch('http://localhost:3000/api/hello', {
+      const response = await fetch('/api/hello', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

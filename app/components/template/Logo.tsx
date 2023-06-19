@@ -18,7 +18,7 @@ export default function Logo() {
         cursor-pointer
       `}
     >
-      <Link href="http://localhost:3000/" className="w-full">
+      <Link href="/" className="w-full">
         <div className="flex items-center justify-center">
           <div
             className={`
