@@ -12,8 +12,11 @@ export default function Mnist() {
   const isDrawing = useRef(false);
   const [predictions, setPredictions] = useState<any>([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   const debounceRef = useRef<any>(undefined);
+  const [session, setSession] = useState<ort.InferenceSession | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const initSession = async () => {
+    setLoading(true);
     const canvas = canvasRef.current;
     const context = canvas!.getContext('2d');
 
@@ -23,6 +26,10 @@ export default function Mnist() {
     context!.strokeStyle = '#222222';
     context!.lineWidth = 7;
     context!.fillStyle = '#fff';
+
+    const newOrtSession = await ort.InferenceSession.create('./onnx_model.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
+    setSession(newOrtSession);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -81,13 +88,15 @@ export default function Mnist() {
     const imgData = context!.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     const imageTensor = new Tensor('float32', new Float32Array(imgData.data), [313600]);
 
-    const session = await ort.InferenceSession.create('./onnx_model.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
+    // const session = await ort.InferenceSession.create('./onnx_model.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
     const feeds: Record<string, ort.Tensor> = {};
-    feeds[session.inputNames[0]] = imageTensor;
+    feeds[session!.inputNames[0]] = imageTensor;
 
-    const outputData = await session.run(feeds);
-    setPredictions(Array.prototype.slice.call(outputData[session.outputNames[0]].data));
+    const outputData = await session!.run(feeds);
+    setPredictions(Array.prototype.slice.call(outputData[session!.outputNames[0]].data));
   };
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="flex flex-col items-center">
