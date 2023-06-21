@@ -16,7 +16,7 @@ export default function Mnist() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const initSession = async () => {
-    setLoading(true);
+    // setLoading(true);
     const canvas = canvasRef.current;
     const context = canvas!.getContext('2d');
 
@@ -29,7 +29,7 @@ export default function Mnist() {
 
     const newOrtSession = await ort.InferenceSession.create('./onnx_model.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
     setSession(newOrtSession);
-    setLoading(false);
+    // setLoading(false);
   };
 
   useEffect(() => {
@@ -96,58 +96,61 @@ export default function Mnist() {
     setPredictions(Array.prototype.slice.call(outputData[session!.outputNames[0]].data));
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return;
 
   return (
-    <div className="flex flex-col items-center">
-      <canvas
-        ref={canvasRef}
-        onMouseDown={startDrawing}
-        onMouseUp={stopDrawing}
-        onMouseMove={draw}
-        className="mb-5 rounded bg-white"
-        width="280"
-        height="280"
-      />
+    <>
+      <div className={`${!loading ? 'hidden' : ''}`}>Loading... please wait...</div>
+      <div className={`flex flex-col items-center ${loading ? 'hidden' : ''}`}>
+        <canvas
+          ref={canvasRef}
+          onMouseDown={startDrawing}
+          onMouseUp={stopDrawing}
+          onMouseMove={draw}
+          className="mb-5 rounded bg-white"
+          width="280"
+          height="280"
+        />
 
-      <div className="flex flex-col">
-        <button
-          className={`
+        <div className="flex flex-col">
+          <button
+            className={`
           w-28 h-10 bg-neutral-400 dark:bg-neutral-600 
           hover:bg-neutral-500 dark:hover:bg-neutral-500 
           text-neutral-100 dark:text-neutral-200
           rounded
           mb-5
         `}
-          onClick={clearCanvas}
-        >
-          CLEAR
-        </button>
+            onClick={clearCanvas}
+          >
+            CLEAR
+          </button>
 
-        <button
-          className={`
+          <button
+            className={`
           w-28 h-14 bg-neutral-400 dark:bg-neutral-600 
           hover:bg-neutral-500 dark:hover:bg-neutral-500 
           text-neutral-100 dark:text-neutral-200
           rounded
           mb-5
         `}
-          onClick={handleDownload}
-        >
-          Download as PNG
-        </button>
-      </div>
+            onClick={handleDownload}
+          >
+            Download as PNG
+          </button>
+        </div>
 
-      <div className="flex">
-        {predictions.map((e: any, i: number) => (
-          <div key={i} className="pt-0 pe-2">
-            <div className="flex flex-col-reverse h-36 w-4 bg-neutral-600 dark:bg-neutral-300">
-              <div style={{ height: `${e * 100}%` }} className={`${e === Math.max(...predictions) ? 'bg-green-600' : 'bg-green-300'}`}></div>
+        <div className="flex">
+          {predictions.map((e: any, i: number) => (
+            <div key={i} className="pt-0 pe-2">
+              <div className="flex flex-col-reverse h-36 w-4 bg-neutral-600 dark:bg-neutral-300">
+                <div style={{ height: `${e * 100}%` }} className={`${e === Math.max(...predictions) ? 'bg-green-600' : 'bg-green-300'}`}></div>
+              </div>
+              <div className="text-lg">{i}</div>
             </div>
-            <div className="text-lg">{i}</div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
