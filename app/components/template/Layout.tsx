@@ -13,7 +13,7 @@ interface Props {
 
 export default function Layout({ title, description, children }: Props) {
   return (
-    <div className="flex flex-col h-screen w-screen bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-100">
+    <div className="flex flex-col w-screen bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-100">
       <HtmlHead title={title} description={description} />
       <TopBar />
       <div className="flex flex-grow">

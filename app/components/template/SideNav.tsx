@@ -20,6 +20,7 @@ export default function SideNav() {
         <NavItem url="/settings" text="Settings" icon={SettingsIcon} />
         <NavItem url="/notifications" text="Notifications" icon={Notifications} />
         <NavItem url="/mnist" text="Mnist" icon={CalculatorIcon} />
+        <NavItem url="/cifar10" text="Cifar10" icon={CalculatorIcon} />
         <NavItem url="/onnxruntime" text="Onnxruntime Web" icon={CalculatorIcon} />
         <NavItem url="/drawing" text="Drawing" icon={PencilIcon} />
         <NavItem url="/canvasdraw" text="Canvas" icon={PencilNoteIcon} />

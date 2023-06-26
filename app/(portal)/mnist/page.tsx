@@ -86,6 +86,7 @@ export default function Mnist() {
     const canvas = canvasRef.current;
     const context = canvas!.getContext('2d');
     const imgData = context!.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    console.log('imgData', imgData);
     const imageTensor = new Tensor('float32', new Float32Array(imgData.data), [313600]);
 
     // const session = await ort.InferenceSession.create('./onnx_model.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
