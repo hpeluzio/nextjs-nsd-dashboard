@@ -1,21 +1,23 @@
 'use client';
 
+import useLayout from '@/app/hooks/useLayout';
 import { RootState } from '@/app/redux/store';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
 
 export default function Logo() {
   const { navbar } = useSelector((state: RootState) => state.layout);
+  const layout = useLayout();
 
   return (
     <div
       className={`
         h-full flex items-center justify-center
         bg-neutral-600 dark:bg-neutral-800
-        ${navbar ? 'w-64' : 'w-20'}
         transition-all
         hover:bg-neutral-500 hover:dark:bg-neutral-700
         cursor-pointer
+        ${layout === 'desktop' ? 'w-64 min-w-64' : 'w-20 min-w-20'}
       `}
     >
       <Link href="/" className="w-full">
@@ -37,7 +39,7 @@ export default function Logo() {
           <div
             className={`text-3xl text-neutral-50 dark:text-neutral-300 ml-3 
         transition-all
-        ${!navbar ? 'hidden' : ''}
+        ${layout === 'mobile' ? 'hidden' : ''}
       `}
           >
             SND

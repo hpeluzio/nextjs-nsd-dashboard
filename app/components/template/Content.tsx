@@ -7,11 +7,11 @@ interface Props {
 }
 export default function Content({ children }: Props) {
   return (
-    <div className="w-full m-1">
+    <div className="m-1">
       <Breadcrumbs />
       <div
         className={`
-          flex flex-col w-full p-5
+          flex flex-col p-5
         `}
       >
         {children}

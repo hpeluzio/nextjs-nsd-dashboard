@@ -17,9 +17,12 @@ export const layoutSlice = createSlice({
     toggleNavbar: (state) => {
       state.navbar = !state.navbar;
     },
+    setNavbar: (state, action) => {
+      state.navbar = action.payload;
+    },
   },
 });
 
-export const { toggleNavbar } = layoutSlice.actions;
+export const { toggleNavbar, setNavbar } = layoutSlice.actions;
 
 export default layoutSlice.reducer;

@@ -15,7 +15,7 @@ export default function NavItem({ url, text, icon }: Props) {
 
   return (
     <li className="mb-1">
-      <Link href={url} className="w-full">
+      <Link href={url}>
         <div
           className={`flex items-center 
             h-12 p-5 w-full text-neutral-50 dark:text-neutral-300

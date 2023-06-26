@@ -1,19 +1,18 @@
 'use client';
 
-import { RootState } from '@/app/redux/store';
-import { useSelector } from 'react-redux';
+import useLayout from '@/app/hooks/useLayout';
 import { CalculatorIcon, EnvelopeIcon, HomeIcon, InfoIcon, LoginIcon, Notifications, PencilIcon, PencilNoteIcon, SettingsIcon, SignUpIcon } from '../icons';
 import NavItem from './NavItem';
 
 export default function SideNav() {
-  const { navbar } = useSelector((state: RootState) => state.layout);
+  const layout = useLayout();
 
   return (
     <aside
       className={`
-        flex flex-col bg-neutral-500 dark:bg-neutral-700 
-        ${navbar ? 'w-64' : 'w-20'}
+        flex flex-col bg-neutral-500 dark:bg-neutral-700
         transition-all
+        ${layout === 'desktop' ? 'w-64 min-w-64' : 'w-20 min-w-20'}
       `}
     >
       <ul className={`flex flex-col flex-grow`}>
