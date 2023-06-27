@@ -15,6 +15,10 @@ export default function Cifar10() {
   const [imageURL, setImageURL] = useState<string>('');
   const [predictions, setPredictions] = useState<any>([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   console.log('predictions', predictions);
+  console.log(
+    'predictions',
+    predictions.map((each: number, idx: number) => ({ prediction: each, class: CATEGORIES[idx] }))
+  );
 
   const initSession = async () => {
     setLoading(true);
@@ -74,9 +78,10 @@ export default function Cifar10() {
   };
 
   const result = () => {
-    const result = Math.max(...softmax(predictions));
-    const idx = softmax(predictions).indexOf(result);
-    return `${CATEGORIES[idx]} - ${softmax(predictions)[idx]}`;
+    const result = Math.max(...predictions);
+    console.log('result', result);
+    const idx = predictions.indexOf(result);
+    return `${CATEGORIES[idx]}-${predictions[idx]}`;
   };
 
   const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +93,7 @@ export default function Cifar10() {
       images.forEach((img: any) => newImageURLs.push(URL.createObjectURL(img)));
       setImageURL(URL.createObjectURL(Array.from(e.target.files)[0]));
 
-      setTimeout(() => updatePredictions(), 500);
+      // setTimeout(() => updatePredictions(), 500);
     }
   };
 
@@ -125,25 +130,40 @@ export default function Cifar10() {
           hover:bg-neutral-500 dark:hover:bg-neutral-500 
           text-neutral-100 dark:text-neutral-200
           rounded
+          ${imageURL === '' && 'opacity-50 hover:'}
         `}
             onClick={updatePredictions}
+            disabled={imageURL === ''}
           >
             PREDICT
           </button>
         </div>
         {imageURL !== '' ? (
-          <div>
-            <div className="flex">
-              <div className="flex justify-end  w-10 mr-2">Result:</div>
-              <div className="flex justify-start w-48 text-2xl">{result()}</div>
-            </div>
+          <div className="flex">
+            {/* <div className="flex flex-col">
+              <div className="flex justify-start mr-2">Result:</div>
+              <div className="flex justify-start w-48">{result()}</div>
+            </div> */}
             <div className="flex flex-col">
-              {[...softmax(predictions)].map((e: any, i: number) => (
-                <div key={i} className="pt-0 pe-2 flex">
-                  <div className="flex justify-end  w-28 mr-2">{CATEGORIES[i]}:</div>
-                  <div className="flex justify-start w-28">{e}</div>
-                </div>
-              ))}
+              {predictions
+                .map((each: number, idx: number) => ({ prediction: each, class: CATEGORIES[idx] }))
+                .sort((a: any, b: any) => {
+                  if (a.prediction > b.prediction) return -1;
+                  if (a.prediction < b.prediction) return 1;
+                  if (a.prediction === b.prediction) return 0;
+                })
+                .map((each: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className={`
+                    pt-0 pe-2 flex
+                    ${idx === 0 && 'text-green-600 font-bold'}
+                  `}
+                  >
+                    <div className="flex justify-end w-20 mr-2">{each.class}:</div>
+                    <div className="flex justify-start w-48">{each.prediction}</div>
+                  </div>
+                ))}
             </div>
           </div>
         ) : (
