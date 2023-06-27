@@ -16,7 +16,7 @@ export default function Layout({ title, description, children }: Props) {
     <div className="flex flex-col w-screen bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-100">
       <HtmlHead title={title} description={description} />
       <TopBar />
-      <div className="flex flex-grow">
+      <div className="flex">
         <SideNav />
         <Content> {children}</Content>
       </div>

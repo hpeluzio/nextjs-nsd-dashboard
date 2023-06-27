@@ -18,7 +18,7 @@ export default function TopBar() {
       `}
     >
       <Logo />
-      <div className="flex h-full items-center ">
+      <div className="flex h-full items-center">
         <div
           className="flex items-center cursor-pointer p-5 h-full text-neutral-50 dark:text-neutral-300 hover:bg-neutral-500 hover:dark:bg-neutral-700"
           onClick={() => {

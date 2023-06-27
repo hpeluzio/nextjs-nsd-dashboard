@@ -12,10 +12,10 @@ export default function SideNav() {
       className={`
         flex flex-col bg-neutral-500 dark:bg-neutral-700
         transition-all
-        ${layout === 'desktop' ? 'w-64 min-w-64' : 'w-20 min-w-20'}
+        ${layout === 'desktop' ? 'w-64 min-w-20' : 'w-20 min-w-20'}
       `}
     >
-      <ul className={`flex flex-col flex-grow`}>
+      <ul className={`flex flex-col`}>
         <NavItem url="/" text="Home" icon={HomeIcon} />
         <NavItem url="/settings" text="Settings" icon={SettingsIcon} />
         <NavItem url="/notifications" text="Notifications" icon={Notifications} />
