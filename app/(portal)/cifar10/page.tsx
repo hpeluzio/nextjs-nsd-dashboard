@@ -18,7 +18,7 @@ export default function Cifar10() {
   const CATEGORIES = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'];
 
   const initSession = async () => {
-    const newOrtSession = await ort.InferenceSession.create('./cifar10_mnist.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
+    const newOrtSession = await ort.InferenceSession.create('./cifar10_onnx_mnist.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
     setSession(newOrtSession);
   };
 
@@ -32,42 +32,43 @@ export default function Cifar10() {
     const canvas = canvasRef.current;
     const context = canvas!.getContext('2d');
 
-    const imageSrc = imageContainerRef!.current!.querySelector('img')!.src;
+    const src = imageContainerRef!.current!.querySelector('img')!.src;
     const img = new Image();
-    img.src = imageSrc;
+    img.src = src;
 
     context!.drawImage(img, 0, 0, 320, 320);
 
-    const imgData = context!.getImageData(0, 0, 32, 32);
-    console.log('imgData', imgData);
-    // Remove the alpha channel by setting it to 255 (fully opaque)
+    // Testing
+    if (!imageContainerRef) return;
+    const imageSrc = imageContainerRef!.current!.querySelector('img')!.src;
+    console.log('imageSrc', imageSrc);
 
-    const pixels = imgData.data.filter((_, idx) => (idx + 1) % 4 !== 0).map((e) => e / 255);
+    var imageData = await Jimp.default.read(imageSrc).then((imageBuffer: Jimp) => {
+      return imageBuffer.resize(32, 32);
+    });
 
-    const newImgDataWithoutAlphaChannel = JSON.parse(JSON.stringify(imgData));
-    newImgDataWithoutAlphaChannel.data = pixels;
-    newImgDataWithoutAlphaChannel.colorSpace = imgData.colorSpace;
-    newImgDataWithoutAlphaChannel.height = imgData.height;
-    newImgDataWithoutAlphaChannel.width = imgData.width;
-    console.log('newImgDataWithoutAlphaChannel', newImgDataWithoutAlphaChannel);
-    context!.putImageData(imgData, 0, 0);
+    var imageBufferData = imageData.bitmap.data;
+    const [redArray, greenArray, blueArray] = new Array(new Array<number>(), new Array<number>(), new Array<number>());
 
-    // if (!imageContainerRef) return;
-    // const imageSrc = imageContainerRef!.current!.querySelector('img')!.src;
-    // console.log('imageSrc', imageSrc);
-    // var imageData = await Jimp.default.read(imageSrc).then((imageBuffer: Jimp) => {
-    //   return imageBuffer.resize(32, 32).rgba(false);
-    // });
+    // 2. Loop through the image buffer and extract the R, G, and B channels
+    for (let i = 0; i < imageBufferData.length; i += 4) {
+      redArray.push(imageBufferData[i]);
+      greenArray.push(imageBufferData[i + 1]);
+      blueArray.push(imageBufferData[i + 2]);
+      // skip data[i + 3] to filter out the alpha channel
+    }
+    // 3. Concatenate RGB to transpose [224, 224, 3] -> [3, 224, 224] to a number array
+    const transposedData = redArray.concat(greenArray).concat(blueArray);
 
-    // const response = await fetch(imageSrc);
-    // const blob = await response.blob();
-    // console.log('blob', blob);
-    // const arrayBuffer = await blob.arrayBuffer();
-    // console.log('arrayBuffer', arrayBuffer);
-
-    // console.log('imageData', imageData.bitmap.data);
-
-    const imageTensor = new Tensor('float32', new Float32Array(newImgDataWithoutAlphaChannel.data), [1, 3, 32, 32]);
+    // 4. convert to float32
+    let l = transposedData.length; // length, we need this for the loop
+    // create the Float32Array size 3 * 224 * 224 for these dimensions output
+    const float32Data = new Float32Array(3 * 32 * 32);
+    for (let i = 0; i < l; i++) {
+      float32Data[i] = transposedData[i] / 255.0; // convert to float
+    }
+    console.log('float32Data', float32Data);
+    const imageTensor = new Tensor('float32', new Float32Array(float32Data), [1, 3, 32, 32]);
     // const imageTensor = new Tensor('float32', new Float32Array(imageData.bitmap.data), [1 * 3 * 32 * 32]);
     console.log('imageTensor', imageTensor);
     const feeds: Record<string, ort.Tensor> = {};
@@ -77,18 +78,14 @@ export default function Cifar10() {
     setPredictions(softmax(Array.prototype.slice.call(outputData[session!.outputNames[0]].data)));
   };
 
-  const softmax = (arr: any) => {
-    return arr.map((value: any, index: number) => {
-      return (
-        Math.exp(value) /
-        arr
-          .map((y: any) => {
-            return Math.exp(y);
-          })
-          .reduce((a: any, b: any) => {
-            return a + b;
-          })
-      );
+  const softmax = (resultArray: number[]): any => {
+    // Get the largest value in the array.
+    const largestNumber = Math.max(...resultArray);
+    // Apply exponential function to each result item subtracted by the largest number, use reduce to get the previous result number and the current number to sum all the exponentials results.
+    const sumOfExp = resultArray.map((resultItem) => Math.exp(resultItem - largestNumber)).reduce((prevNumber, currentNumber) => prevNumber + currentNumber);
+    //Normalizes the resultArray by dividing by the sum of all exponentials; this normalization ensures that the sum of the components of the output vector is 1.
+    return resultArray.map((resultValue, index) => {
+      return Math.exp(resultValue - largestNumber) / sumOfExp;
     });
   };
 

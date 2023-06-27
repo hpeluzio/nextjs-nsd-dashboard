@@ -23,11 +23,10 @@ async function runInference(session: ort.InferenceSession, preprocessedData: any
   // create feeds with the input name from model export and the preprocessed data.
   const feeds: Record<string, ort.Tensor> = {};
   feeds[session.inputNames[0]] = preprocessedData;
-  console.log('session.inputNames[0]', session.inputNames[0]);
-  console.log('feeds', feeds);
+
   // Run the session inference.
   const outputData = await session.run(feeds);
-  console.log('outputData', outputData);
+
   // Get the end time to calculate inference time.
   const end = new Date();
   // Convert to seconds.
@@ -36,7 +35,7 @@ async function runInference(session: ort.InferenceSession, preprocessedData: any
   const output = outputData[session.outputNames[0]];
   //Get the softmax of the output data. The softmax transforms values to be between 0 and 1
   var outputSoftmax = softmax(Array.prototype.slice.call(output.data));
-  console.log('outputSoftmax', outputSoftmax);
+
   //Get the top 5 results.
   var results = imagenetClassesTopK(outputSoftmax, 5);
   console.log('results: ', results);
