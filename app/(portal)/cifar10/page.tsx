@@ -100,6 +100,7 @@ export default function Cifar10() {
   const clear = () => {
     setImages([]);
     setImageURL('');
+    setPredictions([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   };
 
   return (
