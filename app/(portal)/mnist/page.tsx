@@ -27,7 +27,7 @@ export default function Mnist() {
     context!.lineWidth = 7;
     context!.fillStyle = '#fff';
 
-    const newOrtSession = await ort.InferenceSession.create('./onnx_model.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
+    const newOrtSession = await ort.InferenceSession.create('./mnist.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
     setSession(newOrtSession);
     // setLoading(false);
   };
@@ -84,7 +84,7 @@ export default function Mnist() {
 
   const updatePredictions = async () => {
     const canvas = canvasRef.current;
-    const context = canvas!.getContext('2d');
+    const context = canvas!.getContext('2d', { willReadFrequently: true });
     const imgData = context!.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     console.log('imgData', imgData);
     const imageTensor = new Tensor('float32', new Float32Array(imgData.data), [313600]);

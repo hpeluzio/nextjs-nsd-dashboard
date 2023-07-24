@@ -1,15 +1,15 @@
 'use client';
 
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
-import * as ort from 'onnxruntime-web';
-import { Tensor } from 'onnxruntime-web';
-import * as Jimp from 'jimp';
 import Image from 'next/image';
+import { useDispatch } from 'react-redux';
+import { getPredictions } from '@/app/redux/modelsSlice';
+import axios from 'axios';
 
 export default function Cifar10() {
-  const [session, setSession] = useState<ort.InferenceSession | undefined>(undefined);
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(false);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [responseObject, setResponseObject] = useState({});
   const CATEGORIES = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'];
   const [images, setImages] = useState<File[]>([]);
   const [imageURL, setImageURL] = useState<string>('');
@@ -20,79 +20,35 @@ export default function Cifar10() {
     predictions.map((each: number, idx: number) => ({ prediction: each, class: CATEGORIES[idx] }))
   );
 
-  const initSession = async () => {
+  const onSubmit = async (values: any) => {
     setLoading(true);
-    const newOrtSession = await ort.InferenceSession.create('./cifar10_mobile.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
-    setSession(newOrtSession);
+
+    try {
+      console.log('images', images);
+
+      const formData: FormData = new FormData();
+      if (images[0]) formData.append('files', images[0]);
+      formData.append('fullname', 'values.fullname');
+      const response = await dispatch(getPredictions(formData));
+      // const url = 'http://localhost:3333/models/predict';
+      // const response = await axios.post(url, formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data', // Importante definir o Content-Type corretamente
+      //   },
+      // });
+
+      console.log('response', response);
+      setResponseObject(response);
+
+      if (response.status === 201 || response.status === 200) {
+        setPredictions(response.data);
+        console.log('201');
+      }
+    } catch (err) {
+      console.log('Error: ', err);
+      setLoading(false);
+    }
     setLoading(false);
-  };
-
-  useEffect(() => {
-    initSession();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const updatePredictions = async () => {
-    // 1. Get the bugger and resize the image and create R, G, and B arrays.
-    var imageData = await Jimp.default.read(imageURL).then((imageBuffer: Jimp) => {
-      return imageBuffer.resize(32, 32);
-    });
-    var imageBufferData = imageData.bitmap.data;
-    const [redArray, greenArray, blueArray] = new Array(new Array<number>(), new Array<number>(), new Array<number>());
-
-    // 2. Loop through the image buffer and extract the R, G, and B channels
-    for (let i = 0; i < imageBufferData.length; i += 4) {
-      redArray.push(imageBufferData[i]);
-      greenArray.push(imageBufferData[i + 1]);
-      blueArray.push(imageBufferData[i + 2]);
-      // skip data[i + 3] to filter out the alpha channel
-    }
-
-    // 3. Concatenate RGB to transpose [224, 224, 3] -> [3, 224, 224] to a number array
-    const transposedData = redArray.concat(greenArray).concat(blueArray);
-
-    // 4. convert to float32
-    let l = transposedData.length; // length, we need this for the loop
-
-    // create the Float32Array size 3 * 224 * 224 for these dimensions output
-    // Normalize according cifar10 mean/std
-    const mean = [0.4914, 0.4822, 0.4465];
-    const std = [0.2023, 0.1994, 0.201];
-    const float32Data = new Float32Array(3 * 32 * 32);
-    for (let i = 0; i < l; i++) {
-      // float32Data[i] = transposedData[i] / 255.0; // convert to float
-      float32Data[i] = (transposedData[i] / 255.0 - mean[i % 3]) / std[i % 3];
-    }
-
-    // for (let i = 0; i < l; i++) {
-    //   float32Data[i] = (transposedData[i] - mean[i % 3]) / std[i % 3];
-    // }
-
-    // 5. create the tensor object from onnxruntime-web.
-    const imageTensor = new Tensor('float32', new Float32Array(float32Data), [1, 3, 32, 32]);
-    const feeds: Record<string, ort.Tensor> = {};
-    feeds[session!.inputNames[0]] = imageTensor;
-    const outputData = await session!.run(feeds);
-    setPredictions(softmax(Array.prototype.slice.call(outputData[session!.outputNames[0]].data)));
-  };
-
-  const softmax = (resultArray: number[]): any => {
-    // Get the largest value in the array.
-    const largestNumber = Math.max(...resultArray);
-    // Apply exponential function to each result item subtracted by the largest number, use reduce to get the previous result number and the current number to sum all the exponentials results.
-    const sumOfExp = resultArray.map((resultItem) => Math.exp(resultItem - largestNumber)).reduce((prevNumber, currentNumber) => prevNumber + currentNumber);
-    //Normalizes the resultArray by dividing by the sum of all exponentials; this normalization ensures that the sum of the components of the output vector is 1.
-    return resultArray.map((resultValue, index) => {
-      return Math.exp(resultValue - largestNumber) / sumOfExp;
-    });
-  };
-
-  const result = () => {
-    const result = Math.max(...predictions);
-    console.log('result', result);
-    const idx = predictions.indexOf(result);
-    return `${CATEGORIES[idx]}-${predictions[idx]}`;
   };
 
   const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -108,6 +64,19 @@ export default function Cifar10() {
     }
   };
 
+  // const changeThumb = (event) => {
+  //   if (event.target.files && event.target.files[0]) {
+  //     setImage(event.target.files[0]);
+  //     // setPicture(URL.createObjectURL(event.target.files[0]));
+
+  //     const reader = new FileReader();
+  //     // reader.onload = (loadEvent) => {
+  //     //   setPicturebase64(loadEvent.target.result);
+  //     // };
+  //     reader.readAsDataURL(event.target.files[0]);
+  //   }
+  // };
+
   const clear = () => {
     setImages([]);
     setImageURL('');
@@ -116,6 +85,7 @@ export default function Cifar10() {
 
   return (
     <div className="flex items-center flex-col w-full ">
+      <h1 className="mb-5">Cifar10 API call 87%</h1>
       <div className={`${!loading ? 'hidden' : ''}`}>Loading... please wait...</div>
       <div className={`flex flex-col items-center ${loading ? 'hidden' : ''}`}>
         <div>
@@ -144,7 +114,7 @@ export default function Cifar10() {
           rounded
           ${imageURL === '' && 'opacity-50 hover:'}
         `}
-            onClick={updatePredictions}
+            onClick={onSubmit}
             disabled={imageURL === ''}
           >
             PREDICT

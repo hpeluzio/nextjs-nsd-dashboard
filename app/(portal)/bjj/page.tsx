@@ -6,14 +6,14 @@ import { Tensor } from 'onnxruntime-web';
 import * as Jimp from 'jimp';
 import Image from 'next/image';
 
-export default function Cifar10() {
+export default function BJJ() {
   const [session, setSession] = useState<ort.InferenceSession | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const CATEGORIES = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'];
+  const CATEGORIES = ['bjj-gi', 'bjj-nogi', 'wrestling'];
   const [images, setImages] = useState<File[]>([]);
   const [imageURL, setImageURL] = useState<string>('');
-  const [predictions, setPredictions] = useState<any>([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const [predictions, setPredictions] = useState<any>([0, 0, 0]);
   console.log('predictions', predictions);
   console.log(
     'predictions',
@@ -22,7 +22,7 @@ export default function Cifar10() {
 
   const initSession = async () => {
     setLoading(true);
-    const newOrtSession = await ort.InferenceSession.create('./cifar10_mobile.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
+    const newOrtSession = await ort.InferenceSession.create('./best_model_bjj.onnx', { executionProviders: ['webgl'], graphOptimizationLevel: 'all' });
     setSession(newOrtSession);
     setLoading(false);
   };
@@ -34,13 +34,11 @@ export default function Cifar10() {
   }, []);
 
   const updatePredictions = async () => {
-    // 1. Get the bugger and resize the image and create R, G, and B arrays.
     var imageData = await Jimp.default.read(imageURL).then((imageBuffer: Jimp) => {
-      return imageBuffer.resize(32, 32);
+      return imageBuffer.resize(224, 224);
     });
     var imageBufferData = imageData.bitmap.data;
     const [redArray, greenArray, blueArray] = new Array(new Array<number>(), new Array<number>(), new Array<number>());
-
     // 2. Loop through the image buffer and extract the R, G, and B channels
     for (let i = 0; i < imageBufferData.length; i += 4) {
       redArray.push(imageBufferData[i]);
@@ -48,32 +46,23 @@ export default function Cifar10() {
       blueArray.push(imageBufferData[i + 2]);
       // skip data[i + 3] to filter out the alpha channel
     }
-
     // 3. Concatenate RGB to transpose [224, 224, 3] -> [3, 224, 224] to a number array
     const transposedData = redArray.concat(greenArray).concat(blueArray);
-
     // 4. convert to float32
     let l = transposedData.length; // length, we need this for the loop
-
     // create the Float32Array size 3 * 224 * 224 for these dimensions output
-    // Normalize according cifar10 mean/std
-    const mean = [0.4914, 0.4822, 0.4465];
-    const std = [0.2023, 0.1994, 0.201];
-    const float32Data = new Float32Array(3 * 32 * 32);
+    const float32Data = new Float32Array(3 * 224 * 224);
     for (let i = 0; i < l; i++) {
-      // float32Data[i] = transposedData[i] / 255.0; // convert to float
-      float32Data[i] = (transposedData[i] / 255.0 - mean[i % 3]) / std[i % 3];
+      float32Data[i] = transposedData[i] / 255.0; // convert to float
     }
-
-    // for (let i = 0; i < l; i++) {
-    //   float32Data[i] = (transposedData[i] - mean[i % 3]) / std[i % 3];
-    // }
-
-    // 5. create the tensor object from onnxruntime-web.
-    const imageTensor = new Tensor('float32', new Float32Array(float32Data), [1, 3, 32, 32]);
+    console.log('float32Data', float32Data);
+    const imageTensor = new Tensor('float32', new Float32Array(float32Data), [1, 3, 224, 224]);
+    // const imageTensor = new Tensor('float32', new Float32Array(imageData.bitmap.data), [1 * 3 * 224 * 224]);
+    console.log('imageTensor', imageTensor);
     const feeds: Record<string, ort.Tensor> = {};
     feeds[session!.inputNames[0]] = imageTensor;
     const outputData = await session!.run(feeds);
+    console.log('outputData', outputData);
     setPredictions(softmax(Array.prototype.slice.call(outputData[session!.outputNames[0]].data)));
   };
 
@@ -111,7 +100,7 @@ export default function Cifar10() {
   const clear = () => {
     setImages([]);
     setImageURL('');
-    setPredictions([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    setPredictions([0, 0, 0]);
   };
 
   return (
@@ -121,7 +110,7 @@ export default function Cifar10() {
         <div>
           <input type="file" accept="image/*" onChange={(e) => onImageChange(e)} />
 
-          {imageURL !== '' && <Image alt="img" src={imageURL} width="320" height="320" />}
+          {imageURL !== '' && <Image alt="img" src={imageURL} width="224" height="224" />}
         </div>
         <div className="flex m-5 w-full justify-around">
           <button
