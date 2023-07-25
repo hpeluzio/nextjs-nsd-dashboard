@@ -14,11 +14,6 @@ export default function Cifar10() {
   const [images, setImages] = useState<File[]>([]);
   const [imageURL, setImageURL] = useState<string>('');
   const [predictions, setPredictions] = useState<any>([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-  console.log('predictions', predictions);
-  console.log(
-    'predictions',
-    predictions.map((each: number, idx: number) => ({ prediction: each, class: CATEGORIES[idx] }))
-  );
 
   const onSubmit = async (values: any) => {
     setLoading(true);

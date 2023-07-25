@@ -14,11 +14,6 @@ export default function Cifar10() {
   const [images, setImages] = useState<File[]>([]);
   const [imageURL, setImageURL] = useState<string>('');
   const [predictions, setPredictions] = useState<any>([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-  console.log('predictions', predictions);
-  console.log(
-    'predictions',
-    predictions.map((each: number, idx: number) => ({ prediction: each, class: CATEGORIES[idx] }))
-  );
 
   const initSession = async () => {
     setLoading(true);
@@ -74,7 +69,9 @@ export default function Cifar10() {
     const feeds: Record<string, ort.Tensor> = {};
     feeds[session!.inputNames[0]] = imageTensor;
     const outputData = await session!.run(feeds);
-    setPredictions(softmax(Array.prototype.slice.call(outputData[session!.outputNames[0]].data)));
+    console.log('outputData: ', Array.prototype.slice.call(outputData[session!.outputNames[0]].data));
+    // setPredictions(softmax(Array.prototype.slice.call(outputData[session!.outputNames[0]].data)));
+    setPredictions(setProbPredictions(Array.prototype.slice.call(outputData[session!.outputNames[0]].data)));
   };
 
   const softmax = (resultArray: number[]): any => {
@@ -88,11 +85,20 @@ export default function Cifar10() {
     });
   };
 
-  const result = () => {
-    const result = Math.max(...predictions);
-    console.log('result', result);
-    const idx = predictions.indexOf(result);
-    return `${CATEGORIES[idx]}-${predictions[idx]}`;
+  const setProbPredictions = (probabilities: number[]): any => {
+    // Find the minimum value in the array (to handle negative values)
+    const minValue = Math.min(...probabilities);
+
+    // Shift all values by the minimum value to make them non-negative
+    const shiftedArray = probabilities.map((value) => value - minValue);
+
+    // Calculate the total sum of values after shifting
+    const totalSum = shiftedArray.reduce((sum, value) => sum + value, 0);
+
+    // Convert shifted values to percentages
+    const percentages = shiftedArray.map((value) => (value / totalSum) * 100);
+
+    return percentages;
   };
 
   const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
