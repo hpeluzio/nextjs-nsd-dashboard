@@ -57,7 +57,7 @@ export default function Cifar10() {
 
   return (
     <div className="flex items-center flex-col w-full ">
-      <h1 className="mb-5">Cifar10 API call 87%</h1>
+      <h1 className="mb-5">Cifar10 API - Improved accuracy</h1>
       <div className={`${!loading ? 'hidden' : ''}`}>Loading... please wait...</div>
       <div className={`flex flex-col items-center ${loading ? 'hidden' : ''}`}>
         <div>
