@@ -34,7 +34,7 @@ export const getPredictions =
   (formData: FormData): any =>
   async () => {
     try {
-      const response = await api.post(`/models/predict`, formData, {
+      const response = await api.post(`/models/predict/cifar10`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response;

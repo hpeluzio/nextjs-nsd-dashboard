@@ -24,25 +24,17 @@ export default function Cifar10() {
     setLoading(true);
 
     try {
-      console.log('images', images);
-
       const formData: FormData = new FormData();
       if (images[0]) formData.append('files', images[0]);
       formData.append('fullname', 'values.fullname');
-      const response = await dispatch(getPredictions(formData));
-      // const url = 'http://localhost:3333/models/predict';
-      // const response = await axios.post(url, formData, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data', // Importante definir o Content-Type corretamente
-      //   },
-      // });
 
-      console.log('response', response);
+      const response = await dispatch(getPredictions(formData));
+
+      console.log('Response: ', response);
       setResponseObject(response);
 
       if (response.status === 201 || response.status === 200) {
         setPredictions(response.data);
-        console.log('201');
       }
     } catch (err) {
       console.log('Error: ', err);
@@ -59,23 +51,8 @@ export default function Cifar10() {
       const newImageURLs: any[] = [];
       images.forEach((img: any) => newImageURLs.push(URL.createObjectURL(img)));
       setImageURL(URL.createObjectURL(Array.from(e.target.files)[0]));
-
-      // setTimeout(() => updatePredictions(), 500);
     }
   };
-
-  // const changeThumb = (event) => {
-  //   if (event.target.files && event.target.files[0]) {
-  //     setImage(event.target.files[0]);
-  //     // setPicture(URL.createObjectURL(event.target.files[0]));
-
-  //     const reader = new FileReader();
-  //     // reader.onload = (loadEvent) => {
-  //     //   setPicturebase64(loadEvent.target.result);
-  //     // };
-  //     reader.readAsDataURL(event.target.files[0]);
-  //   }
-  // };
 
   const clear = () => {
     setImages([]);
