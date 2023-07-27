@@ -17,7 +17,7 @@ export default function Cifar10() {
 
   const initSession = async () => {
     setLoading(true);
-    const newOrtSession = await ort.InferenceSession.create('./cifar10_squeezenet1_0_0.81364.onnx', {
+    const newOrtSession = await ort.InferenceSession.create('./cifar10_squeezenet1_0_0.93140.onnx', {
       executionProviders: ['webgl'],
       graphOptimizationLevel: 'all',
     });
@@ -125,7 +125,7 @@ export default function Cifar10() {
 
   return (
     <div className="flex items-center flex-col w-full ">
-      <h1 className="mb-5">Cifar10 - SqueezeNet 1_0 - 81.364% acc</h1>
+      <h1 className="mb-5">Cifar10 - SqueezeNet 1_0 - 93.140% acc</h1>
       <div className={`${!loading ? 'hidden' : ''}`}>Loading... please wait...</div>
       <div className={`flex flex-col items-center ${loading ? 'hidden' : ''}`}>
         <div>
