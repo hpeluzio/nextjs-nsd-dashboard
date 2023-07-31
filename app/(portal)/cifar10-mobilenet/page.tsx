@@ -17,7 +17,7 @@ export default function Cifar10() {
 
   const initSession = async () => {
     setLoading(true);
-    const newOrtSession = await ort.InferenceSession.create('./mobile_net.onnx', {
+    const newOrtSession = await ort.InferenceSession.create('./cifar10_mobilenet_v2_82.7400.onnx', {
       executionProviders: ['webgl'],
       graphOptimizationLevel: 'all',
     });
