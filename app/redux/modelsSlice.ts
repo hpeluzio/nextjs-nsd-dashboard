@@ -30,11 +30,25 @@ export const modelsSlice = createSlice({
 
 export const { increment, decrement, incrementByAmount } = modelsSlice.actions;
 
-export const getPredictions =
+export const getCifar10Predictions =
   (formData: FormData): any =>
   async () => {
     try {
       const response = await api.post(`/models/predict/cifar10`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response;
+    } catch (error: any) {
+      console.log('error.response: ', error.response);
+      return error.response;
+    }
+  };
+
+export const getCoffeeDiseasesPredictions =
+  (formData: FormData): any =>
+  async () => {
+    try {
+      const response = await api.post(`/models/predict/coffee-diseases`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response;

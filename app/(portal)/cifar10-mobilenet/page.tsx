@@ -6,7 +6,7 @@ import { Tensor } from 'onnxruntime-web';
 import * as Jimp from 'jimp';
 import Image from 'next/image';
 
-export default function Cifar10() {
+export default function CoffeeDiseases() {
   const [session, setSession] = useState<ort.InferenceSession | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

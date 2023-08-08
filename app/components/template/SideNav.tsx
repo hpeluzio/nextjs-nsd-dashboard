@@ -19,6 +19,7 @@ export default function SideNav() {
         <NavItem url="/" text="Home" icon={HomeIcon} />
         {/* <NavItem url="/settings" text="Settings" icon={SettingsIcon} /> */}
         {/* <NavItem url="/notifications" text="Notifications" icon={Notifications} /> */}
+        <NavItem url="/coffee-diseases-api" text="Coffee Diseases Resnet50 (API)" icon={CalculatorIcon} />
         <NavItem url="/mnist" text="Mnist" icon={CalculatorIcon} />
         <NavItem url="/cifar10-squeezenet" text="Cifar10 SqueezeNet" icon={CalculatorIcon} />
         <NavItem url="/cifar10-mobilenet" text="Cifar10 MobileNet" icon={CalculatorIcon} />

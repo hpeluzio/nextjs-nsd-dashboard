@@ -3,17 +3,16 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
-import { getCifar10Predictions } from '@/app/redux/modelsSlice';
-import axios from 'axios';
+import { getCoffeeDiseasesPredictions } from '@/app/redux/modelsSlice';
 
-export default function Cifar10Api() {
+export default function CoffeeDiseasesApi() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const [responseObject, setResponseObject] = useState({});
-  const CATEGORIES = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck'];
+  const CATEGORIES = ['Cercospora', 'Phoma', 'Leaf miner / Bixo mineiro', 'Red spider mite / Ácaro vermelho'];
   const [images, setImages] = useState<File[]>([]);
   const [imageURL, setImageURL] = useState<string>('');
-  const [predictions, setPredictions] = useState<any>([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const [predictions, setPredictions] = useState<any>([0, 0, 0, 0]);
 
   const onSubmit = async (values: any) => {
     setLoading(true);
@@ -23,7 +22,7 @@ export default function Cifar10Api() {
       if (images[0]) formData.append('files', images[0]);
       formData.append('fullname', 'values.fullname');
 
-      const response = await dispatch(getCifar10Predictions(formData));
+      const response = await dispatch(getCoffeeDiseasesPredictions(formData));
 
       console.log('Response: ', response);
       setResponseObject(response);
@@ -52,12 +51,12 @@ export default function Cifar10Api() {
   const clear = () => {
     setImages([]);
     setImageURL('');
-    setPredictions([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    setPredictions([0, 0, 0, 0]);
   };
 
   return (
     <div className="flex items-center flex-col w-full ">
-      <h1 className="mb-5">Cifar10 API - resnet50 - 90.6400% Accuracy</h1>
+      <h1 className="mb-5">Coffee Diseases API - resnet50 - XXXX% Accuracy</h1>
       <div className={`${!loading ? 'hidden' : ''}`}>Loading... please wait...</div>
       <div className={`flex flex-col items-center ${loading ? 'hidden' : ''}`}>
         <div>
@@ -114,8 +113,8 @@ export default function Cifar10Api() {
                     ${idx === 0 && 'text-green-600 font-bold'}
                   `}
                   >
-                    <div className="flex justify-end w-20 mr-2">{each.class}:</div>
-                    <div className="flex justify-start w-48">{each.prediction}</div>
+                    <div className="flex justify-end w-72 mr-2">{each.class}:</div>
+                    <div className="flex justify-start w-20">{each.prediction}</div>
                   </div>
                 ))}
             </div>
