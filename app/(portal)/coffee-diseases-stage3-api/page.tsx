@@ -56,7 +56,7 @@ export default function CoffeeDiseasesApi() {
 
   return (
     <div className="flex items-center flex-col w-full ">
-      <h1 className="mb-5">Coffee Diseases Stage 3 API - resnet50 - 72.01% Accuracy</h1>
+      <h1 className="mb-5">Coffee Diseases Stage 3 API - densenet121 - 96.045% Accuracy</h1>
       <div className={`${!loading ? 'hidden' : ''}`}>Loading... please wait...</div>
       <div className={`flex flex-col items-center ${loading ? 'hidden' : ''}`}>
         <div>
