@@ -19,11 +19,12 @@ export default function SideNav() {
         <NavItem url="/" text="Home" icon={HomeIcon} />
         {/* <NavItem url="/settings" text="Settings" icon={SettingsIcon} /> */}
         {/* <NavItem url="/notifications" text="Notifications" icon={Notifications} /> */}
-        <NavItem url="/coffee-diseases-api" text="Coffee Diseases Resnet50 (API)" icon={CalculatorIcon} />
+        <NavItem url="/coffee-diseases-stage2-api" text="Coffee Stage2 API" icon={CalculatorIcon} />
+        <NavItem url="/coffee-diseases-stage3-api" text="Coffee Stage3 API" icon={CalculatorIcon} />
         <NavItem url="/mnist" text="Mnist" icon={CalculatorIcon} />
         <NavItem url="/cifar10-squeezenet" text="Cifar10 SqueezeNet" icon={CalculatorIcon} />
         <NavItem url="/cifar10-mobilenet" text="Cifar10 MobileNet" icon={CalculatorIcon} />
-        <NavItem url="/cifar10-api" text="Cifar10 Resnet50 (API)" icon={CalculatorIcon} />
+        <NavItem url="/cifar10-api" text="Cifar10 Resnet50 API" icon={CalculatorIcon} />
         {/* <NavItem url="/bjj" text="BJJ" icon={CalculatorIcon} /> */}
         <NavItem url="/onnxruntime" text="Onnxruntime Web" icon={CalculatorIcon} />
         <NavItem url="/drawing" text="Drawing" icon={PencilIcon} />

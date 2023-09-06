@@ -3,7 +3,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
-import { getCoffeeDiseasesPredictions } from '@/app/redux/modelsSlice';
+import { getCoffeeDiseasesPredictionsStage3 } from '@/app/redux/modelsSlice';
 
 export default function CoffeeDiseasesApi() {
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ export default function CoffeeDiseasesApi() {
       if (images[0]) formData.append('files', images[0]);
       formData.append('fullname', 'values.fullname');
 
-      const response = await dispatch(getCoffeeDiseasesPredictions(formData));
+      const response = await dispatch(getCoffeeDiseasesPredictionsStage3(formData));
 
       console.log('Response: ', response);
       setResponseObject(response);
@@ -56,7 +56,7 @@ export default function CoffeeDiseasesApi() {
 
   return (
     <div className="flex items-center flex-col w-full ">
-      <h1 className="mb-5">Coffee Diseases API - resnet50 - XXXX% Accuracy</h1>
+      <h1 className="mb-5">Coffee Diseases Stage 3 API - resnet50 - 72.01% Accuracy</h1>
       <div className={`${!loading ? 'hidden' : ''}`}>Loading... please wait...</div>
       <div className={`flex flex-col items-center ${loading ? 'hidden' : ''}`}>
         <div>

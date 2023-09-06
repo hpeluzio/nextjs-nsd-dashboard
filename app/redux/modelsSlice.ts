@@ -44,11 +44,25 @@ export const getCifar10Predictions =
     }
   };
 
-export const getCoffeeDiseasesPredictions =
+export const getCoffeeDiseasesPredictionsStage2 =
   (formData: FormData): any =>
   async () => {
     try {
-      const response = await api.post(`/models/predict/coffee-diseases`, formData, {
+      const response = await api.post(`/models/predict/coffee-diseases-stage2`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response;
+    } catch (error: any) {
+      console.log('error.response: ', error.response);
+      return error.response;
+    }
+  };
+
+export const getCoffeeDiseasesPredictionsStage3 =
+  (formData: FormData): any =>
+  async () => {
+    try {
+      const response = await api.post(`/models/predict/coffee-diseases-stage3`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       return response;
