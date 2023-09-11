@@ -7,12 +7,25 @@ import { getCoffeeDiseasesPredictionsStage2 } from '@/app/redux/modelsSlice';
 
 export default function CoffeeDiseasesApi() {
   const dispatch = useDispatch();
+  const ctx = useRef();
   const [loading, setLoading] = useState<boolean>(false);
   const [responseObject, setResponseObject] = useState({});
   const CATEGORIES = ['Rust / Ferrugem', 'Brown_Spots / Pontos marrons', 'Sooty_Molds / Mofo Fuliginoso'];
   const [images, setImages] = useState<File[]>([]);
   const [imageURL, setImageURL] = useState<string>('');
   const [predictions, setPredictions] = useState<any>([0, 0, 0]);
+  console.log('images', images);
+
+  // To log the dimensions of the first image in the images state
+  if (images[0]) {
+    const img = document.createElement('img');
+
+    img.onload = () => {
+      console.log(`Image width: ${img.naturalWidth}px, height: ${img.naturalHeight}px`);
+    };
+
+    img.src = URL.createObjectURL(images[0]);
+  }
 
   const onSubmit = async (values: any) => {
     setLoading(true);
@@ -23,7 +36,7 @@ export default function CoffeeDiseasesApi() {
       formData.append('fullname', 'values.fullname');
 
       const response = await dispatch(getCoffeeDiseasesPredictionsStage2(formData));
-      +console.log('Response: ', response);
+      console.log('Response: ', response);
       setResponseObject(response);
 
       if (response.status === 201 || response.status === 200) {
@@ -36,15 +49,43 @@ export default function CoffeeDiseasesApi() {
     setLoading(false);
   };
 
-  const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedImages = Array.from(e.target.files);
-      setImages(selectedImages);
-
       const newImageURLs: any[] = [];
-      images.forEach((img: any) => newImageURLs.push(URL.createObjectURL(img)));
-      setImageURL(URL.createObjectURL(Array.from(e.target.files)[0]));
+
+      // Loop through the selected images and resize them to 224x224
+      for (const img of selectedImages) {
+        const resizedImageURL = await resizeImage(img, 1024, 1024);
+        newImageURLs.push(resizedImageURL);
+      }
+
+      setImageURL(newImageURLs[0]); // Assuming you want to set the first resized image URL
     }
+  };
+
+  // Function to resize an image using a canvas
+  const resizeImage = (image: File, width: number, height: number): Promise<string> => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(image);
+
+      img.onload = () => {
+        canvas.width = width;
+        canvas.height = height;
+        ctx?.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const resizedImage = new File([blob], image.name, { type: image.type });
+            setImages([resizedImage]);
+            resolve(URL.createObjectURL(resizedImage));
+          }
+        }, image.type);
+      };
+    });
   };
 
   const clear = () => {
